@@ -1,0 +1,17 @@
+{
+  "name": "BlogAppV2",
+  "displayName": "BlogAppV2",
+  "expo": {
+    "name": "BlogAppV2",
+    "slug": "BlogAppV2",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
