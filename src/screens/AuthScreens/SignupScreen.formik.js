@@ -15,6 +15,7 @@ import ErrorMessage from '../../components/ErrorMessages'
 
 import Logo from '../../components/Logo'
 import { AuthContext } from '../../components/Context'
+import { Parse } from 'parse/react-native'
 
 const SignupValidationSchema = Yup.object().shape({
   username: Yup.string()
@@ -45,20 +46,40 @@ export default function SignupScreen(props) {
     authContext
       .signUp(values.username, values.email, values.password)
       .then((result) => {
-        console.log('DEBUG:', values.username, values.email, values.password)
-        props.navigation.navigate('AfterSignup', result.data.message)
+        console.log('DEBUG: SIGNUP result', result)
+        props.navigation.navigate('AfterSignup', 'User Created Successfully')
         // actions.setSubmitting(false)
       })
       .catch((err) => {
-        console.log('DEBUG: ERROR', err)
+        console.log('DEBUG: ERROR2', err)
         const resMessage =
           (err.response && err.response.data && err.response.data.message) ||
           err.message ||
           err.toString()
-        // props.navigation.navigate('AfterSignup', resMessage)
         setserverErrMessage(resMessage)
         actions.setSubmitting(false)
       })
+  }
+
+  const _handleSubmit = (values, actions) => {
+    actions.setSubmitting(true)
+    const user = new Parse.User()
+    user.set('username', values.username)
+    user.set('email', values.email)
+    user.set('password', values.password)
+
+    user
+      .signUp()
+      .then((user) => {
+        console.log('User', user)
+        if (typeof document !== 'undefined') console.log('User signed up', user)
+      })
+      .catch((error) => {
+        console.log('Error', error)
+        if (typeof document !== 'undefined') console.log('Error while signing up user', error)
+      })
+
+    actions.setSubmitting(false)
   }
 
   return (

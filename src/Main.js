@@ -5,9 +5,12 @@ import RootStackNavigator from '../src/navigations/RootStackNavigator'
 
 import { AuthContext } from '../src/components/Context'
 import SplashScreen from '../src/screens/SplashScreen'
-import AsyncStorage from '@react-native-community/async-storage'
+import { AsyncStorage } from '@react-native-community/async-storage'
 
 import AuthService from '../src/services/api/auth.service'
+
+// import ParseService from '../src/services/parse.service'
+import { Signup, Signin } from '../src/services/parse.service'
 
 const USER = 'user'
 
@@ -82,18 +85,48 @@ export default function Main() {
   const authContext = useMemo(() => ({
     signIn: async (username, password) => {
       // Call Signin API Save it in AsyncStorage for use in App bootup
-      return AuthService.signinAPI(username, password).then((result) => {
-        if (result.data.accessToken) {
-          console.log('DEBUG: RESPONSE DATA from MAIN', result.data.username)
-          AsyncStorage.setItem(USER, JSON.stringify(result.data))
+    
+    
+    
+    
+    let sg = await Signin(username, password)
 
-          dispatch({
-            type: 'SIGN_IN',
-            token: result.data.accessToken,
-            username: result.data.username,
-          })
-        }
+    if (sg.)
+    
+    
+      let sg
+      try {
+        sg = await Signin(username, password)
+        console.log('SESION', sg)
+
+        // if (sg) {
+
+        //   dispatch({
+        //     type: 'SIGN_IN',
+        //     token: result.data.accessToken,
+        //     username: result.data.username,
+        //   })
+      } catch (error) {
+        console.log('ERR111', error)
+        sg = error
+      }
+      console.log('object', sg)
+      return sg
+      // return Signin(username, password)
+
+      // AuthService.signinAPI(username, password).then((result) => {
+      //   if (result.data.accessToken) {
+      //     console.log('DEBUG: RESPONSE DATA from MAIN', result.data.username)
+      //     // AsyncStorage.setItem(USER, JSON.stringify(result.data))
+
+      dispatch({
+        type: 'SIGN_IN',
+        token: result.data.accessToken,
+        username: result.data.username,
       })
+
+      //   }
+      // })
     },
 
     signOut: () => {
@@ -101,8 +134,10 @@ export default function Main() {
       AsyncStorage.removeItem(USER)
       dispatch({ type: 'SIGN_OUT' })
     },
+
     signUp: async (username, email, password) => {
-      return AuthService.signupAPI(username, email, password)
+      console.log('SIGNUP FIRED IN MAIN')
+      return Signup(username, email, password)
     },
     state: state,
   }))

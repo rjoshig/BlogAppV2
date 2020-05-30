@@ -1,10 +1,13 @@
 /* eslint-disable react-native/no-color-literals */
 
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
-import * as React from 'react'
+import React, { useEffect } from 'react'
 import { Platform, StyleSheet } from 'react-native'
 
 import Main from './src/Main'
+// import { ParseInit } from './src/services/parse.service'
+
+import ParseInit from './src/configs/parse.config'
 // NOTE: REMOVE BELOW LINE IN PROD
 // ;<script src="http://localhost:8097/"></script>
 
@@ -24,6 +27,12 @@ const instructions = Platform.select({
 })
 
 export default function App() {
+  useEffect(() => {
+    console.log('DEBUG: APP USE EFFECT: INIT PARSE')
+    ParseInit()
+    // rjoshi: This can be puit in MAin during Bootstrapping
+  })
+
   return (
     <PaperProvider theme={theme}>
       <Main></Main>

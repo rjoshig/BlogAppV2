@@ -49,7 +49,7 @@ export default function SigninScreen(props) {
       .signIn(values.username, values.password)
       .then((result) => {
         console.log('DEBUG:  THEN HANDLE SIGNIN', result)
-        //    actions.setSubmitting(false)
+        actions.setSubmitting(false)
       })
       .catch((err) => {
         console.log('DEBUG: ERROR CATCH SIGNINSCREEN', err)
