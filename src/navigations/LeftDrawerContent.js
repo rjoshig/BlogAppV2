@@ -122,7 +122,7 @@ const PublicLeftDrawerContent = (props) => {
 export default function LeftDrawerContent(props) {
   const authContext = useContext(AuthContext)
 
-  const _handleLogout = () => {
+  const handleLogout = () => {
     authContext.signOut()
   }
   // const [isSignedIn, setisSignedIn] = useState(true)
@@ -162,7 +162,7 @@ export default function LeftDrawerContent(props) {
               <MaterialCommunityIcons name="logout" color={color} size={size} />
             )}
             label="Logout"
-            onPress={_handleLogout}
+            onPress={handleLogout}
           />
         </Drawer.Section>
       </View>
