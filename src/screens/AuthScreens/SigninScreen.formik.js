@@ -13,7 +13,7 @@ import { AuthContext } from '@components/Context'
 import Logo from '@components/Logo'
 import { b4aSignin } from '@services/parse.service'
 
-const validationSchema = Yup.object().shape({
+const SigninValidationSchema = Yup.object().shape({
   username: Yup.string()
     .min(2, 'Too Short!  Mimimum 2 Charaters')
     .max(25, 'Too Long!')
@@ -91,7 +91,7 @@ export default function SigninScreen(props) {
         onSubmit={(values, actions) => {
           handleSubmit(values, actions)
         }}
-        validationSchema={validationSchema}
+        validationSchema={SigninValidationSchema}
       >
         {({
           handleChange,
@@ -124,7 +124,6 @@ export default function SigninScreen(props) {
               secureTextEntry={true}
               onChangeText={handleChange('password')}
               iconName="ios-lock"
-              s
               iconColor="#2C384A"
             />
             <ErrorMessage errorValue={touched.password && errors.password} />

@@ -133,11 +133,14 @@ export default function Main() {
       dispatch({ type: 'SIGN_OUT' })
     },
 
-    signUp: async (username, email, password) => {
+    signUp: () => {
       // TODO: Implement this function to be called directly from Signup Screen.
       // You can probably set the state for Signup to activate the After SignupScreen from here
       // OR log in the user directly after signup. Need to think a bit
-      return b4aSignup(username, email, password)
+      //  return b4aSignup(username, email, password)
+      console.log(
+        'DEBUG: Signup Called in Main. (Placeholder Function for Signup Dispatch when implememnted, Its called from Signup Screen',
+      )
     },
     state: state,
   }))

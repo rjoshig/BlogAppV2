@@ -44,7 +44,6 @@ const b4aGetCurrentUserFromToken = async (sessionTokenStorage) => {
   } catch (error) {
     console.log(error)
     console.log('DEBUG: ERROR From parse.service (b4aGetCurrentUserFromToken)', error)
-
     return null
   }
 }
