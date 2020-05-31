@@ -11,7 +11,7 @@ import ErrorMessage from '@components/ErrorMessages'
 
 import { AuthContext } from '@components/Context'
 import Logo from '@components/Logo'
-import { b4aSignin } from '@services/parse.service'
+import { b4aSignin } from '@services/ParseAuth.service'
 
 const SigninValidationSchema = Yup.object().shape({
   username: Yup.string()
@@ -42,6 +42,11 @@ export default function SigninScreen(props) {
   const goToSignup = () => {
     console.log('Create Account Pressed')
     props.navigation.navigate('SignupScreen')
+  }
+
+  const goToPasswordReset = () => {
+    console.log('Reset Password Pressed')
+    props.navigation.navigate('ResetPasswordScreen')
   }
 
   const handleSubmit = (values, actions) => {
@@ -146,6 +151,15 @@ export default function SigninScreen(props) {
       <Button
         title="Don't have an account? Sign Up"
         onPress={goToSignup}
+        titleStyle={{
+          color: '#F57C00',
+        }}
+        type="clear"
+      />
+
+      <Button
+        title="Forgot Password?"
+        onPress={goToPasswordReset}
         titleStyle={{
           color: '#F57C00',
         }}

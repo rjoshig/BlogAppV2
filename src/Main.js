@@ -7,7 +7,7 @@ import { AuthContext } from '@components/Context'
 import SplashScreen from '@screens/SplashScreen'
 import AsyncStorage from '@react-native-community/async-storage'
 
-import { b4aSignup, b4aSignout, b4aGetCurrentUserFromToken } from '@services/parse.service'
+import { b4aSignup, b4aSignout, b4aGetCurrentUserFromToken } from '@services/ParseAuth.service'
 
 const STORAGE_SESSION_TOKEN = 'sessionToken'
 

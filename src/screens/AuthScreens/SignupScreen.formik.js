@@ -17,7 +17,7 @@ import Logo from '../../components/Logo'
 import { AuthContext } from '../../components/Context'
 import { Parse } from 'parse/react-native'
 
-import { b4aSignup } from '@services/parse.service'
+import { b4aSignup } from '@services/ParseAuth.service'
 
 const SignupValidationSchema = Yup.object().shape({
   username: Yup.string()
