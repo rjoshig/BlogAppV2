@@ -35,7 +35,7 @@ const ProtectedLeftDrawerContent = (props) => {
         />
         <Title style={styles.title}>Ramesh Joshi</Title>
 
-        <TouchableRipple onPress={() => props.navigation.navigate('Profile')}>
+        <TouchableRipple onPress={() => props.navigation.navigate('ProfileScreen')}>
           <Caption style={styles.caption}>{authContext.state.userName}</Caption>
         </TouchableRipple>
 
@@ -134,10 +134,10 @@ export default function LeftDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.drawerContent}>
-        {authContext.state.isSignout ? (
-          <PublicLeftDrawerContent {...props} />
-        ) : (
+        {authContext.state.userName ? (
           <ProtectedLeftDrawerContent {...props} />
+        ) : (
+          <PublicLeftDrawerContent {...props} />
         )}
 
         <Drawer.Section title="App Preferences">
