@@ -5,14 +5,15 @@ import { Button } from 'react-native-elements'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 
-import FormInput from '../../components/FormInput'
-import FormButton from '../../components/FormButton'
-import ErrorMessage from '../../components/ErrorMessages'
+import FormInput from '@components/FormInput'
+import FormButton from '@components/FormButton'
+import ErrorMessage from '@components/ErrorMessages'
 
-import { AuthContext } from '../../components/Context'
-import Logo from '../../components/Logo'
+import { AuthContext } from '@components/Context'
+import Logo from '@components/Logo'
+import { b4aSignin } from '@services/parse.service'
 
-const validationSchema = Yup.object().shape({
+const SigninValidationSchema = Yup.object().shape({
   username: Yup.string()
     .min(2, 'Too Short!  Mimimum 2 Charaters')
     .max(25, 'Too Long!')
@@ -44,12 +45,14 @@ export default function SigninScreen(props) {
   }
 
   const handleSubmit = (values, actions) => {
-    // actions.setSubmitting(true)
-    authContext
-      .signIn(values.username, values.password)
+    b4aSignin(values.username, values.password)
       .then((result) => {
         console.log('DEBUG:  THEN HANDLE SIGNIN', result)
-        actions.setSubmitting(false)
+
+        // This will displatch and change the state Globally
+        authContext.signIn(result.getUsername(), result.getSessionToken())
+
+        //    actions.setSubmitting(false)
       })
       .catch((err) => {
         console.log('DEBUG: ERROR CATCH SIGNINSCREEN', err)
@@ -61,6 +64,24 @@ export default function SigninScreen(props) {
         // props.navigation.navigate('AfterSignup', resMessage)
         actions.setSubmitting(false)
       })
+
+    // actions.setSubmitting(true)
+    // authContext
+    //   .signIn(values.username, values.password)
+    //   .then((result) => {
+    //     console.log('DEBUG:  THEN HANDLE SIGNIN', result)
+    //     actions.setSubmitting(false)
+    //   })
+    //   .catch((err) => {
+    //     console.log('DEBUG: ERROR CATCH SIGNINSCREEN', err)
+    //     const resMessage =
+    //       (err.response && err.response.data && err.response.data.message) ||
+    //       err.message ||
+    //       err.toString()
+    //     setserverErrMessage(resMessage)
+    //     // props.navigation.navigate('AfterSignup', resMessage)
+    //     actions.setSubmitting(false)
+    //   })
   }
 
   return (
@@ -70,7 +91,7 @@ export default function SigninScreen(props) {
         onSubmit={(values, actions) => {
           handleSubmit(values, actions)
         }}
-        validationSchema={validationSchema}
+        validationSchema={SigninValidationSchema}
       >
         {({
           handleChange,
@@ -103,7 +124,6 @@ export default function SigninScreen(props) {
               secureTextEntry={true}
               onChangeText={handleChange('password')}
               iconName="ios-lock"
-              s
               iconColor="#2C384A"
             />
             <ErrorMessage errorValue={touched.password && errors.password} />
