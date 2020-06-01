@@ -48,4 +48,16 @@ const b4aGetCurrentUserFromToken = async (sessionTokenStorage) => {
   }
 }
 
-export { b4aSignup, b4aSignin, b4aSignout, b4aGetCurrentUser, b4aGetCurrentUserFromToken }
+const b4aResetPassword = (email) => {
+  console.log('PARSE AUTH RESET')
+  return Parse.User.requestPasswordReset(email)
+}
+
+export {
+  b4aSignup,
+  b4aSignin,
+  b4aSignout,
+  b4aGetCurrentUser,
+  b4aGetCurrentUserFromToken,
+  b4aResetPassword,
+}

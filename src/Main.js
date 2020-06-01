@@ -7,7 +7,7 @@ import { AuthContext } from '@components/Context'
 import SplashScreen from '@screens/SplashScreen'
 import AsyncStorage from '@react-native-community/async-storage'
 
-import { b4aSignup, b4aSignout, b4aGetCurrentUserFromToken } from '@services/ParseAuth.service'
+import { b4aSignout, b4aGetCurrentUserFromToken } from '@services/ParseAuth.service'
 
 const STORAGE_SESSION_TOKEN = 'sessionToken'
 
@@ -54,50 +54,27 @@ export default function Main() {
   const [state, dispatch] = useReducer(authReducer, initialState)
 
   console.log('DEBUG: Reducer State:', state)
-  /*
-  useEffect(() => {
-    const bootstrapAsync = async () => {
-      let user
-      try {
-        user = await AsyncStorage.getItem(USER)
-      } catch (error) {
-        console.log('DEBUG: Restoring token failed', error)
-      }
 
-      if (user) {
-        const parsedUser = JSON.parse(user)
-        dispatch({
-          type: 'RESTORE_TOKEN',
-          token: parsedUser.accessToken,
-          username: parsedUser.username,
-        })
-      } else {
-        dispatch({ type: 'NO_TOKEN' })
-      }
-    }
-
-    bootstrapAsync()
-  }, [])
-*/
   useEffect(() => {
     const bootstrapAsync = async () => {
       // Restore Token from Storage
       try {
         const sessionTokenStorage = await AsyncStorage.getItem(STORAGE_SESSION_TOKEN)
-        const userObj = await b4aGetCurrentUserFromToken(sessionTokenStorage)
-        // const userObj = await Parse.User.me(sessionTokenStorage)
-        const currentUser = userObj.currentUser
-        const sessionToken = userObj.sessionToken
+        if (sessionTokenStorage) {
+          const userObj = await b4aGetCurrentUserFromToken(sessionTokenStorage)
+          const currentUser = userObj.currentUser
+          const sessionToken = userObj.sessionToken
 
-        console.log('bootstrap CurrentUser', currentUser, sessionToken)
+          console.log('bootstrap CurrentUser', currentUser, sessionToken)
 
-        if (currentUser && sessionToken) {
-          console.log('DISPATCH', currentUser, sessionToken)
-          dispatch({
-            type: 'RESTORE_TOKEN',
-            username: currentUser,
-            token: sessionToken,
-          })
+          if (currentUser && sessionToken) {
+            console.log('DISPATCH', currentUser, sessionToken)
+            dispatch({
+              type: 'RESTORE_TOKEN',
+              username: currentUser,
+              token: sessionToken,
+            })
+          }
         } else {
           dispatch({ type: 'NO_TOKEN' })
         }

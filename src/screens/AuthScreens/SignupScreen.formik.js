@@ -1,7 +1,6 @@
 // TODO: Signup button needs to be clicked twice. Debug
 // TODO: Update Styles
 // TODO: Add Captcha
-
 import React, { useState, Fragment, useContext } from 'react'
 import { StyleSheet, SafeAreaView, View, ScrollView } from 'react-native'
 import { Button } from 'react-native-elements'
@@ -15,7 +14,6 @@ import ErrorMessage from '../../components/ErrorMessages'
 
 import Logo from '../../components/Logo'
 import { AuthContext } from '../../components/Context'
-import { Parse } from 'parse/react-native'
 
 import { b4aSignup } from '@services/ParseAuth.service'
 
@@ -45,17 +43,12 @@ export default function SignupScreen(props) {
   const handleSubmit = (values, actions) => {
     actions.setSubmitting(true)
     // Call Signup from parse.service
-
     b4aSignup(values.username, values.email, values.password)
       .then((result) => {
-        console.log('DEBUG: SIGNUP result', result)
-        authContext.signUp()
-
+        authContext.signUp() // dispatch
         props.navigation.navigate('AfterSignup', 'User Created Successfully')
-        // actions.setSubmitting(false)
       })
       .catch((err) => {
-        console.log('DEBUG: ERROR2', err)
         const resMessage =
           (err.response && err.response.data && err.response.data.message) ||
           err.message ||

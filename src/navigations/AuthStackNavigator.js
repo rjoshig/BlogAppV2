@@ -10,7 +10,7 @@ const AuthStack = createStackNavigator()
 
 export default function AuthStackNavigator() {
   return (
-    <AuthStack.Navigator headerMode="screen">
+    <AuthStack.Navigator headerMode="none">
       <AuthStack.Screen
         name="SigninScreen"
         component={SigninScreen}
@@ -30,8 +30,7 @@ export default function AuthStackNavigator() {
       <AuthStack.Screen
         name="ResetPasswordScreen"
         component={ResetPassword}
-        options={{ title: 'Reset Password', headerShown: true }}
-        // options={{ title: 'Congratulations' }}
+        options={{ title: 'Reset Password' }}
       />
     </AuthStack.Navigator>
   )
