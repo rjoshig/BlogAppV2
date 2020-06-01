@@ -1,15 +1,15 @@
 import React, { useReducer, useEffect, useMemo } from 'react'
 
 import { NavigationContainer } from '@react-navigation/native'
-import RootStackNavigator from '../src/navigations/RootStackNavigator'
+import RootStackNavigator from '@navigations/RootStackNavigator'
 
-import { AuthContext } from '../src/components/Context'
-import SplashScreen from '../src/screens/SplashScreen'
+import { AuthContext } from '@components/Context'
+import SplashScreen from '@screens/SplashScreen'
 import AsyncStorage from '@react-native-community/async-storage'
 
-import AuthService from '../src/services/api/auth.service'
+import { b4aSignout, b4aGetCurrentUserFromToken } from '@services/ParseAuth.service'
 
-const USER = 'user'
+const STORAGE_SESSION_TOKEN = 'sessionToken'
 
 function authReducer(prevState, action) {
   switch (action.type) {
@@ -57,22 +57,29 @@ export default function Main() {
 
   useEffect(() => {
     const bootstrapAsync = async () => {
-      let user
+      // Restore Token from Storage
       try {
-        user = await AsyncStorage.getItem(USER)
-      } catch (error) {
-        console.log('DEBUG: Restoring token failed', error)
-      }
+        const sessionTokenStorage = await AsyncStorage.getItem(STORAGE_SESSION_TOKEN)
+        if (sessionTokenStorage) {
+          const userObj = await b4aGetCurrentUserFromToken(sessionTokenStorage)
+          const currentUser = userObj.currentUser
+          const sessionToken = userObj.sessionToken
 
-      if (user) {
-        const parsedUser = JSON.parse(user)
-        dispatch({
-          type: 'RESTORE_TOKEN',
-          token: parsedUser.accessToken,
-          username: parsedUser.username,
-        })
-      } else {
-        dispatch({ type: 'NO_TOKEN' })
+          console.log('bootstrap CurrentUser', currentUser, sessionToken)
+
+          if (currentUser && sessionToken) {
+            console.log('DISPATCH', currentUser, sessionToken)
+            dispatch({
+              type: 'RESTORE_TOKEN',
+              username: currentUser,
+              token: sessionToken,
+            })
+          }
+        } else {
+          dispatch({ type: 'NO_TOKEN' })
+        }
+      } catch (error) {
+        console.log('DEBUG: ERROR From Main.js (bootstrapAsync)', error)
       }
     }
 
@@ -80,34 +87,42 @@ export default function Main() {
   }, [])
 
   const authContext = useMemo(() => ({
-    signIn: async (username, password) => {
-      // Call Signin API Save it in AsyncStorage for use in App bootup
-      return AuthService.signinAPI(username, password).then((result) => {
-        if (result.data.accessToken) {
-          console.log('DEBUG: RESPONSE DATA from MAIN', result.data.username)
-          AsyncStorage.setItem(USER, JSON.stringify(result.data))
+    signIn: async (username, sessionToken) => {
+      // Use the logged in username and Session Token and save it in AsyncStorage
+      // Dispatch correct state for App so that it takes it to Home page
 
-          dispatch({
-            type: 'SIGN_IN',
-            token: result.data.accessToken,
-            username: result.data.username,
-          })
-        }
+      try {
+        await AsyncStorage.setItem(STORAGE_SESSION_TOKEN, sessionToken)
+      } catch (error) {
+        console.log('DEBUG:ERROR FROM Main.js (signIn)', error)
+      }
+
+      dispatch({
+        type: 'SIGN_IN',
+        token: sessionToken,
+        username: username,
       })
     },
 
-    signOut: () => {
-      // NOTE: Delete Token from Storage as well
-      AsyncStorage.removeItem(USER)
+    signOut: async () => {
+      await b4aSignout()
+      await AsyncStorage.removeItem(STORAGE_SESSION_TOKEN)
       dispatch({ type: 'SIGN_OUT' })
     },
-    signUp: async (username, email, password) => {
-      return AuthService.signupAPI(username, email, password)
+
+    signUp: () => {
+      // TODO: Implement this function to be called directly from Signup Screen.
+      // You can probably set the state for Signup to activate the After SignupScreen from here
+      // OR log in the user directly after signup. Need to think a bit
+      //  return b4aSignup(username, email, password)
+      console.log(
+        'DEBUG: Signup Called in Main. (Placeholder Function for Signup Dispatch when implememnted, Its called from Signup Screen',
+      )
     },
     state: state,
   }))
 
-  if (state.isLoading) {
+  if (state.isloading) {
     return <SplashScreen />
   }
 
