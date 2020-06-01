@@ -69,6 +69,8 @@ src/playground*
 src/Main.PG.js
 .vscode/.react
 #this will usually have sensitive object
-config/*.config.js
 ReactotronConfig.js
 *copy.js
+
+##Environment variables
+*.env
