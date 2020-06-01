@@ -8,6 +8,7 @@ import SplashScreen from '@screens/SplashScreen'
 import AsyncStorage from '@react-native-community/async-storage'
 
 import { b4aSignout, b4aGetCurrentUserFromToken } from '@services/ParseAuth.service'
+import { b4aGetUserInfo } from '@services/ParseQuery.service'
 
 const STORAGE_SESSION_TOKEN = 'sessionToken'
 
@@ -58,6 +59,7 @@ export default function Main() {
   useEffect(() => {
     const bootstrapAsync = async () => {
       // Restore Token from Storage
+
       try {
         const sessionTokenStorage = await AsyncStorage.getItem(STORAGE_SESSION_TOKEN)
         if (sessionTokenStorage) {
