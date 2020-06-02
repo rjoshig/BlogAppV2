@@ -31,7 +31,12 @@ export default function Header({ scene, previous, navigation }) {
       <Appbar.Content
         title={
           title === 'Home' ? (
-            <MaterialCommunityIcons style={{ marginRight: 10 }} color={theme.colors.primary} name="twitter" size={40} />
+            <MaterialCommunityIcons
+              style={{ marginRight: 10 }}
+              color={theme.colors.primary}
+              name="twitter"
+              size={40}
+            />
           ) : (
             title
           )

@@ -1,12 +1,26 @@
 import { Parse } from 'parse/react-native'
 
 const b4aGetUserInfo = async (username) => {
-  const User = new Parse.User()
-  const query = new Parse.Query(User)
+  // const User = new Parse.User()
+  const query = new Parse.Query(Parse.User)
+  // const query = new Parse.Query(User)
+
   query.equalTo('username', username)
+
   const results = await query.find()
-  console.log('ParseQueryResult', results)
+  console.log('DEBUG:: b4aGetUserInfo -> results', results.username)
 }
+
+// var query = new Parse.Query(myclass);
+// query.find().then((results) => {
+//   // results is an array of parse.object.
+// }).catch((error) =>  {
+//  // error is an instance of parse.error.
+// });
+
+// const query = new Parse.Query(Parse.User);
+// query.equalTo("gender", "female");  // find all the women
+// const women = await query.find();
 
 //   const GameScore = Parse.Object.extend("GameScore");
 // const query = new Parse.Query(GameScore);

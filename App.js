@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 import { Platform, StyleSheet } from 'react-native'
 
 import Main from './src/Main'
-import ParseInit from '@services/parse.init'
+import ParseInit from '@services/parse/parse.init'
 
 // NOTE: REMOVE BELOW LINE IN PROD
 // ;<script src="http://localhost:8097/"></script>
