@@ -11,7 +11,7 @@ import ErrorMessage from '@components/ErrorMessages'
 
 import { AuthContext } from '@components/Context'
 import Logo from '@components/Logo'
-import { b4aSignin } from '@services/ParseAuth.service'
+import { b4aSignin } from '@services/parse//ParseQuery.service'
 
 const SigninValidationSchema = Yup.object().shape({
   username: Yup.string()

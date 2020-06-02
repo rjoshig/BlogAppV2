@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 import { Platform, StyleSheet } from 'react-native'
 
 import Main from './src/Main'
-import ParseInit from '@services/parse.init'
+import ParseInit from '@services/parse/parse.init'
 
 // NOTE: REMOVE BELOW LINE IN PROD
 // ;<script src="http://localhost:8097/"></script>
@@ -15,10 +15,11 @@ const theme = {
   roundness: 2,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#3498db',
+    primary: '#00BFFF',
     accent: '#f1c40f',
   },
 }
+//    primary: '#3498db',
 
 const instructions = Platform.select({
   ios: `Press Cmd+R to reload,\nCmd+D or shake for dev menu`,

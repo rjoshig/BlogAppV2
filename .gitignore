@@ -74,3 +74,6 @@ ReactotronConfig.js
 
 ##Environment variables
 *.env
+
+#Firebase
+google-services.json

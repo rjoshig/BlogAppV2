@@ -7,7 +7,8 @@ import { AuthContext } from '@components/Context'
 import SplashScreen from '@screens/SplashScreen'
 import AsyncStorage from '@react-native-community/async-storage'
 
-import { b4aSignout, b4aGetCurrentUserFromToken } from '@services/ParseAuth.service'
+import { b4aSignout, b4aGetCurrentUserFromToken } from '@services/parse/ParseAuth.service'
+import { b4aGetUserInfo } from '@services/parse/ParseQuery.service'
 
 const STORAGE_SESSION_TOKEN = 'sessionToken'
 
@@ -48,6 +49,7 @@ export default function Main() {
     isSignout: false,
     userToken: null,
     userName: null,
+    fullName: 'John Doe',
   }
 
   // useREducer Hook
@@ -58,17 +60,14 @@ export default function Main() {
   useEffect(() => {
     const bootstrapAsync = async () => {
       // Restore Token from Storage
+
       try {
         const sessionTokenStorage = await AsyncStorage.getItem(STORAGE_SESSION_TOKEN)
         if (sessionTokenStorage) {
           const userObj = await b4aGetCurrentUserFromToken(sessionTokenStorage)
           const currentUser = userObj.currentUser
           const sessionToken = userObj.sessionToken
-
-          console.log('bootstrap CurrentUser', currentUser, sessionToken)
-
           if (currentUser && sessionToken) {
-            console.log('DISPATCH', currentUser, sessionToken)
             dispatch({
               type: 'RESTORE_TOKEN',
               username: currentUser,
@@ -79,7 +78,7 @@ export default function Main() {
           dispatch({ type: 'NO_TOKEN' })
         }
       } catch (error) {
-        console.log('DEBUG: ERROR From Main.js (bootstrapAsync)', error)
+        console.log('DEBUG:: bootstrapAsync -> error', error)
       }
     }
 

@@ -33,7 +33,7 @@ const ProtectedLeftDrawerContent = (props) => {
           }}
           size={50}
         />
-        <Title style={styles.title}>Ramesh Joshi</Title>
+        <Title style={styles.title}>John Doe</Title>
 
         <TouchableRipple onPress={() => props.navigation.navigate('ProfileScreen')}>
           <Caption style={styles.caption}>{authContext.state.userName}</Caption>

@@ -37,13 +37,14 @@ const b4aGetCurrentUserFromToken = async (sessionTokenStorage) => {
 
   try {
     const userObj = await Parse.User.me(sessionTokenStorage)
+    console.log('DEBUG:: b4aGetCurrentUserFromToken -> userObj', userObj)
+
     const currentUser = userObj.get('username')
     const sessionToken = userObj.get('sessionToken')
 
     return { currentUser, sessionToken }
   } catch (error) {
-    console.log(error)
-    console.log('DEBUG: ERROR From parse.service (b4aGetCurrentUserFromToken)', error)
+    console.log('DEBUG:: b4aGetCurrentUserFromToken -> error', error)
     return null
   }
 }

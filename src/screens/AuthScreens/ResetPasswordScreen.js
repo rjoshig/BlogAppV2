@@ -9,7 +9,7 @@ import FormInput from '@components/FormInput'
 import FormButton from '@components/FormButton'
 import ErrorMessage from '@components/ErrorMessages'
 
-import { b4aResetPassword } from '@services/ParseAuth.service'
+import { b4aResetPassword } from '@services/parse//ParseQuery.service'
 
 const ResetPasswordValidationSchema = Yup.object().shape({
   email: Yup.string().label('Email').email('Invalid Email').required('Required'),
@@ -64,16 +64,10 @@ export default function ResetPassword(props) {
     props.navigation.goBack()
   }
 
-  const goToSignup = () => {
-    console.log('Create Account Pressed')
-    props.navigation.navigate('SignupScreen')
-  }
-
   const handleSubmit = (values, actions) => {
     b4aResetPassword(values.email)
       .then((result) => {
         console.log('DEBUG:  THEN HANDLE SIGNIN', result)
-
         // This will displatch and change the state Globally
         // authContext.signIn(result.getUsername(), result.getSessionToken())
 
