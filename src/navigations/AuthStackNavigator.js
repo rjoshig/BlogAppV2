@@ -1,8 +1,8 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 
-import SigninScreen from '../screens/AuthScreens/SigninScreen.formik'
-import SignupScreen from '../screens/AuthScreens/SignupScreen.formik'
+import SigninScreen from '../screens/AuthScreens/SigninScreen.firebase'
+import SignupScreen from '../screens/AuthScreens/SignupScreen.firebase'
 import AfterSignup from '../screens/AuthScreens/AfterSignup'
 import ResetPassword from '../screens/AuthScreens/ResetPasswordScreen'
 

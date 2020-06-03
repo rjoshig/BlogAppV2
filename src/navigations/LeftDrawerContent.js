@@ -134,7 +134,7 @@ export default function LeftDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.drawerContent}>
-        {authContext.state.userName ? (
+        {authContext.state.isLoggedIn ? (
           <ProtectedLeftDrawerContent {...props} />
         ) : (
           <PublicLeftDrawerContent {...props} />
