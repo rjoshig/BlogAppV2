@@ -98,6 +98,7 @@ export default function SignupScreen(props) {
                 onChangeText={handleChange('password')}
                 iconName="ios-lock"
                 iconColor="#2C384A"
+                onBlur={handleBlur('password')}
               />
               <ErrorMessage errorValue={touched.password && errors.password} />
 
@@ -110,6 +111,7 @@ export default function SignupScreen(props) {
                 onChangeText={handleChange('confirmpassword')}
                 iconName="ios-lock"
                 iconColor="#2C384A"
+                onBlur={handleBlur('confirmpassword')}
               />
               <ErrorMessage errorValue={touched.confirmpassword && errors.confirmpassword} />
               <ErrorMessage errorValue={serverErrMessage} />

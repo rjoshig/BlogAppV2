@@ -14,12 +14,19 @@ const STORAGE_SESSION_TOKEN = 'sessionToken'
 
 function authReducer(prevState, action) {
   switch (action.type) {
-    case 'RESTORE_AUTH':
+    case 'RESTORE_AUTH_WITH_NAME':
       return {
         ...prevState,
         isLoading: false,
         emailId: action.email,
-        fullName: action.name,
+        fullName: action.name, // ! NAME
+        photoUrl: action.photourl,
+        emailVerified: action.emailverified,
+      }
+    case 'RESTORE_AUTH_NO_NAME':
+      return {
+        ...prevState,
+        isLoading: false,
         emailId: action.email,
         photoUrl: action.photourl,
         emailVerified: action.emailverified,
@@ -30,7 +37,16 @@ function authReducer(prevState, action) {
         isLoading: false,
         isLoggedIn: false,
       }
-    case 'SIGN_IN':
+    case 'SIGN_IN_WITH_NAME':
+      return {
+        ...prevState,
+        isLoggedIn: true,
+        fullName: action.name, // ! NAME
+        emailId: action.email,
+        photoUrl: action.photourl,
+        emailVerified: action.emailverified,
+      }
+    case 'SIGN_IN_NO_NAME':
       return {
         ...prevState,
         isLoggedIn: true,
@@ -39,10 +55,18 @@ function authReducer(prevState, action) {
         photoUrl: action.photourl,
         emailVerified: action.emailverified,
       }
+
     case 'SIGN_OUT':
       return {
         ...prevState,
         isLoggedIn: false,
+      }
+
+    case 'UPDATE_PROFILE':
+      return {
+        ...prevState,
+        emailId: action.emailId,
+        fullName: action.displayName,
       }
   }
 }
@@ -67,13 +91,23 @@ export default function Main() {
     const onAuthStateChanged = (user) => {
       if (user) {
         console.log('DEBUG:: onAuthStateChanged -> user', user)
-        dispatch({
-          type: 'RESTORE_AUTH',
-          name: user.displayName,
-          email: user.email,
-          photourl: user.photoURL,
-          emailverified: user.emailVerified,
-        })
+
+        if (user.displayName) {
+          dispatch({
+            type: 'RESTORE_AUTH_WITH_NAME',
+            name: user.displayName,
+            email: user.email,
+            photourl: user.photoURL,
+            emailverified: user.emailVerified,
+          })
+        } else {
+          dispatch({
+            type: 'RESTORE_AUTH_NO_NAME',
+            email: user.email,
+            photourl: user.photoURL,
+            emailverified: user.emailVerified,
+          })
+        }
       } else {
         dispatch({
           type: 'NO_AUTH',
@@ -97,13 +131,42 @@ export default function Main() {
       //   console.log('DEBUG:ERROR FROM Main.js (signIn)', error)
       // }
 
-      dispatch({
-        type: 'SIGN_IN',
-        fullName: user.displayName,
-        emailId: user.email,
-        photoUrl: user.photoURL,
-        emailVerified: user.emailVerified,
-      })
+      // {
+      //   "additionalUserInfo": {
+      //       "isNewUser": false
+      //   },
+      //   "user": {
+      //       "displayName": null,
+      //       "email": "rjo@rjo.com",
+      //       "emailVerified": false,
+      //       "isAnonymous": false,
+      //       "metadata": [Object
+      //       ],
+      //       "phoneNumber": null,
+      //       "photoURL": null,
+      //       "providerData": [Array
+      //       ],
+      //       "providerId": "firebase",
+      //       "uid": "ouhc6i74slfyaantM6QfB9E342W2"
+      //   }
+      //   }
+
+      if (user.displayName) {
+        dispatch({
+          type: 'SIGN_IN_WITH_NAME',
+          fullName: user.displayName,
+          emailId: user.email,
+          photoUrl: user.photoURL,
+          emailVerified: user.emailVerified,
+        })
+      } else {
+        dispatch({
+          type: 'SIGN_IN_NO_NAME',
+          emailId: user.email,
+          photoUrl: user.photoURL,
+          emailVerified: user.emailVerified,
+        })
+      }
     },
 
     signOut: async () => {
@@ -121,6 +184,14 @@ export default function Main() {
         'DEBUG: Signup Called in Main. (Placeholder Function for Signup Dispatch when implememnted, Its called from Signup Screen',
       )
     },
+    updateProfile: (profileObj) => {
+      dispatch({
+        type: 'UPDATE_PROFILE',
+        emailId: profileObj.emailId,
+        fullName: profileObj.displayName,
+      })
+    },
+
     state: state,
   }))
 

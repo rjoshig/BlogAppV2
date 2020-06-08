@@ -4,7 +4,7 @@ import BottomTabNavigator from '@navigations/BottomTabNavigator'
 
 import Feed from '@screens/Feed'
 import HomeScreen from '@screens/HomeScreen'
-import ProfileScreen from '@screens/ProfileScreen'
+import ProfileScreen from '@screens/Profile/ProfileScreen'
 import Header from '@components/Header'
 import Preferences from '@screens/Preferences'
 import Bookmarks from '@screens/Bookmarks'

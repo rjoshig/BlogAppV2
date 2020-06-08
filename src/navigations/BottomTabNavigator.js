@@ -8,7 +8,6 @@ import { useIsFocused, RouteProp } from '@react-navigation/native'
 
 import HomeScreen from '../screens/HomeScreen'
 import Feed from '../screens/Feed'
-import ProfileScreen from '../screens/ProfileScreen'
 import Header from '../components/Header'
 import Preferences from '../screens/Preferences'
 import Bookmarks from '../screens/Bookmarks'
