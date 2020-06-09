@@ -1,6 +1,6 @@
 import React, { useState, Fragment, useContext } from 'react'
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native'
-import Modal from 'react-native-modal'
+import { View, StyleSheet, SafeAreaView } from 'react-native'
+
 import { Button } from 'react-native-elements'
 
 import { Formik } from 'formik'

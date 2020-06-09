@@ -1,7 +1,34 @@
 import auth from '@react-native-firebase/auth'
+import database from '@react-native-firebase/database'
 
-const SignUpService = (email, password) => {
+// const usersRef = database().ref('users')
+
+// firebaseRef.child('users').child(user.uid).once('value', callback)
+
+const SignUpService2 = (email, password) => {
   return auth().createUserWithEmailAndPassword(email, password)
+}
+
+const SignUpService = async (email, password) => {
+  return auth()
+    .createUserWithEmailAndPassword(email, password)
+    .then((authData) => {
+      console.log('DEBUG:: authData', authData)
+      console.log('DEBUG:: authData22222222222', authData.user.uid)
+
+      const usersData = {}
+
+      usersData.displayName = authData.user.displayName // ? Not needed since at this point Display name is not set yet
+      usersData.email = email.toLowerCase()
+      usersData.aboutme = '' // ? Not needed since at this point Display name is not set yet
+
+      database()
+        .ref('users/' + authData.user.uid)
+        .set(usersData)
+        .then((result) => {
+          console.log('DEBUG:: result', result)
+        })
+    })
 }
 
 const SignInService = (email, password) => {
@@ -32,83 +59,11 @@ const ChangePasswordService = (newPassword) => {
   return user.updatePassword(newPassword)
 }
 
-// changePassword() {
-// //  let self = this; // i use "self" to get around scope issues
-//   var user = auth().currentUser;
-//   var credential = firebase.auth.EmailAuthProvider.credential(
-//       this.$store.state.userId, // references the user's email address
-//       this.oldPassword
-//   );
-
-//   user.reauthenticateWithCredential(credential)
-//       .then(function() {
-//           // User re-authenticated.
-//           user.updatePassword(self.newPassword)
-//               .then(function() {
-//                   console.log("Password update successful!");
-//               })
-//               .catch(function(error) {
-//                   console.log(
-//                       "An error occurred while changing the password:",
-//                       error
-//                   );
-//               });
-//       })
-//       .catch(function(error) {
-//           console.log("Some kinda bug: ", error);
-//           // An error happened.
-//       });
-
-// const UpdateUserService = (name, password) => {
-
-//   var user = firebase.auth().currentUser;
-
-// user.updateProfile({
-//   displayName: name,
-//   emailId: emailId
-// }).then(function() {
-//   // Update successful.
-// }).catch(function(error) {
-//   // An error happened.
-// });
-
-// }
-
-// const AuthObserver = () => {
-
-//     function onAuthStateChanged(user) {
-//         setUser(user);
-//         if (initializing) setInitializing(false);
-//       }
-
-//       auth().onAuthStateChanged(onAuthStateChanged);
-
-//     return auth().onAuthStateChanged(
-
-//         function(user) {
-//         if (user) {
-//           // User is signed in.
-//           var displayName = user.displayName;
-//           var email = user.email;
-//           var emailVerified = user.emailVerified;
-//           var photoURL = user.photoURL;
-//           var isAnonymous = user.isAnonymous;
-//           var uid = user.uid;
-//           var providerData = user.providerData;
-//           // ...
-//         } else {
-//           // User is signed out.
-//           // ...
-//         }
-//       }
-
-//     )
-//   }
-
 export {
   SignInService,
   SignUpService,
   SignOutService,
   ChangePasswordService,
   ReauthenticateWithCredentialService,
+  SignUpService2,
 }

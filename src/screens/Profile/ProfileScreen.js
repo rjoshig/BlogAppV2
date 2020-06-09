@@ -11,30 +11,9 @@
 // }
 
 import React, { useContext, useState, useMemo, useEffect } from 'react'
-import {
-  Button,
-  TextInput,
-  StyleSheet,
-  ScrollView,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-} from 'react-native'
+import { TextInput, StyleSheet, ScrollView, Text, View, TouchableOpacity } from 'react-native'
 import { DEVICE_WIDTH } from '@utilities/Dimensions'
-import {
-  useTheme,
-  Avatar,
-  Divider,
-  Title,
-  Caption,
-  Paragraph,
-  Drawer,
-  TouchableRipple,
-  Switch,
-} from 'react-native-paper'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useTheme, Avatar } from 'react-native-paper'
 
 import Modal from 'react-native-modal'
 
@@ -116,8 +95,9 @@ export default function ProfileScreen() {
     },
   }))
 
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible)
+  const handleOnBackButtonPress = () => {
+    setIsReAuthenticateFormVisible(false)
+    setIsNewPasswordFormVisible(false)
   }
 
   const handleEdit = () => {
@@ -175,7 +155,7 @@ export default function ProfileScreen() {
           backdropColor="#FFF"
           isVisible={isReAuthenticateFormVisible}
           // onBackdropPress={toggleModal}
-          onBackButtonPress={toggleModal} // Called when the Android back button is pressed
+          onBackButtonPress={handleOnBackButtonPress} // Called when the Android back button is pressed
           swipeDirection={['down']}
           // animationOut="slideOutDown"
           coverScreen={true}
@@ -195,7 +175,7 @@ export default function ProfileScreen() {
           backdropColor="#FFF"
           isVisible={isNewPasswordFormVisible}
           // onBackdropPress={toggleModal}
-          onBackButtonPress={toggleModal} // Called when the Android back button is pressed
+          onBackButtonPress={handleOnBackButtonPress} // Called when the Android back button is pressed
           swipeDirection={['down']}
           // animationOut="slideOutDown"
           coverScreen={true}
@@ -222,13 +202,6 @@ export default function ProfileScreen() {
             size={150}
           />
 
-          {/* 
-      <Image
-        style={styles.avatar}
-        source={{
-          uri: 'https://pbs.twimg.com/profile_images/952545910990495744/b59hSXUd_400x400.jpg',
-        }}
-      /> */}
           <View style={styles.body}>
             <View style={styles.bodyContent}>
               {isEdit ? (
@@ -238,19 +211,7 @@ export default function ProfileScreen() {
                   style={styles.textName}
                 />
               ) : (
-                <View style={styles.nameContainer}>
-                  <Text style={styles.name}>{displayName}</Text>
-                  {/* {isEdit ? (
-                    <TouchableOpacity onPress={handleEditDisplayName}>
-                      <MaterialCommunityIcons
-                        style={{ padding: 10 }}
-                        name="account-edit"
-                        size={24}
-                        color="black"
-                      />
-                    </TouchableOpacity>
-                  ) : null} */}
-                </View>
+                <View style={styles.nameContainer}></View>
               )}
 
               {isEdit ? (
@@ -277,16 +238,6 @@ export default function ProfileScreen() {
               ) : (
                 <View>
                   <Text style={styles.description}>{aboutMe}</Text>
-                  {/* {isEdit ? (
-                    <TouchableOpacity onPress={handleEditAboutMe}>
-                      <MaterialCommunityIcons
-                        style={{ padding: 10 }}
-                        name="account-edit"
-                        size={24}
-                        color="black"
-                      />
-                    </TouchableOpacity>
-                  ) : null} */}
                 </View>
               )}
               {isEdit ? (
@@ -308,13 +259,6 @@ export default function ProfileScreen() {
                   </TouchableOpacity>
                 </View>
               )}
-              {/* <TouchableOpacity onPress={() => setIsModalVisible(!isModalVisible)}>
-                  <Text style={{ color: theme.colors.primary }}>Change Password </Text>
-                </TouchableOpacity> */}
-              {/* 
-            <TouchableOpa
-            nPress={() => consolesetModalVisible(true)d')     <Tyle={{ color: theme.colors.primary }}>Change Pass</TouchableHighlight>leOpacity>
-           */}
             </View>
           </View>
         </View>

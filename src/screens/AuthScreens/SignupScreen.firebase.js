@@ -38,7 +38,25 @@ export default function SignupScreen(props) {
 
   const handleSubmit = (values, actions) => {
     actions.setSubmitting(true)
-    // Call Signup from parse.service
+
+    // const res = SignUpService2(values.email, values.password)
+    // console.log('DEBUG:: handleSubmit -> res', res)
+
+    // .then((result) => {
+    //   console.log('DEBUG:: handleSubmit -> result', result)
+
+    //   authContext.signUp() // dispatch
+    //   // props.navigation.navigate('AfterSignup', 'User Created Successfully')
+    // })
+    // .catch((err) => {
+    //   const resMessage =
+    //     (err.response && err.response.data && err.response.data.message) ||
+    //     err.message ||
+    //     err.toString()
+    //   setserverErrMessage(resMessage)
+    //   actions.setSubmitting(false)
+    // })
+
     SignUpService(values.email, values.password)
       .then((result) => {
         console.log('DEBUG:: handleSubmit -> result', result)
