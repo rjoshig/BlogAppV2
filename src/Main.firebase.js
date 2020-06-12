@@ -22,6 +22,7 @@ function authReducer(prevState, action) {
         fullName: action.name, // ! NAME
         photoUrl: action.photourl,
         emailVerified: action.emailverified,
+        uid: action.uid,
       }
     case 'RESTORE_AUTH_NO_NAME':
       return {
@@ -30,6 +31,7 @@ function authReducer(prevState, action) {
         emailId: action.email,
         photoUrl: action.photourl,
         emailVerified: action.emailverified,
+        uid: action.uid,
       }
     case 'NO_AUTH':
       return {
@@ -45,6 +47,7 @@ function authReducer(prevState, action) {
         emailId: action.email,
         photoUrl: action.photourl,
         emailVerified: action.emailverified,
+        uid: action.uid,
       }
     case 'SIGN_IN_NO_NAME':
       return {
@@ -54,6 +57,7 @@ function authReducer(prevState, action) {
         emailId: action.email,
         photoUrl: action.photourl,
         emailVerified: action.emailverified,
+        uid: action.uid,
       }
 
     case 'SIGN_OUT':
@@ -80,12 +84,13 @@ export default function Main() {
     emailId: null,
     photoUrl: null,
     emailVerified: false,
+    uid: null,
   }
 
   // useREducer Hook
   const [state, dispatch] = useReducer(authReducer, initialState)
 
-  console.log('DEBUG: Reducer State:', state)
+  console.log('DEBUG: \x1b[36m Reducer State:', state)
 
   useEffect(() => {
     const onAuthStateChanged = (user) => {
@@ -99,6 +104,7 @@ export default function Main() {
             email: user.email,
             photourl: user.photoURL,
             emailverified: user.emailVerified,
+            uid: user.uid,
           })
         } else {
           dispatch({
@@ -106,6 +112,7 @@ export default function Main() {
             email: user.email,
             photourl: user.photoURL,
             emailverified: user.emailVerified,
+            uid: user.uid,
           })
         }
       } else {
@@ -116,12 +123,18 @@ export default function Main() {
     }
 
     const userObj = auth().onAuthStateChanged(onAuthStateChanged)
-    return userObj // unsubscribe on unmount
+    //   return userObj // unsubscribe on unmount
   }, [])
 
   const authContext = useMemo(() => ({
-    signIn: (user) => {
-      console.log('DEBUG:: Main -> user', user)
+    signIn: (userData) => {
+      console.log('DEBUG:: Main authContext-> userData', userData)
+      console.log(
+        '\x1B[31m userData',
+        userData.user.email,
+        userData.user.uid,
+        userData.user.emailVerified,
+      )
       // Use the logged in user and Session Token and save it in AsyncStorage
       // Dispatch correct state for App so that it takes it to Home page
 
@@ -151,20 +164,22 @@ export default function Main() {
       //   }
       //   }
 
-      if (user.displayName) {
+      if (userData.user.displayName) {
         dispatch({
           type: 'SIGN_IN_WITH_NAME',
-          fullName: user.displayName,
-          emailId: user.email,
-          photoUrl: user.photoURL,
-          emailVerified: user.emailVerified,
+          fullName: userData.user.displayName,
+          emailId: userData.user.email,
+          photoUrl: userData.user.photoURL,
+          emailVerified: userData.user.emailVerified,
+          uid: userData.user.uid,
         })
       } else {
         dispatch({
           type: 'SIGN_IN_NO_NAME',
-          emailId: user.email,
-          photoUrl: user.photoURL,
-          emailVerified: user.emailVerified,
+          emailId: userData.user.email,
+          photoUrl: userData.user.photoURL,
+          emailVerified: userData.user.emailVerified,
+          uid: userData.user.uid,
         })
       }
     },
@@ -195,7 +210,7 @@ export default function Main() {
     state: state,
   }))
 
-  if (state.isloading) {
+  if (state.isLoading) {
     return <SplashScreen />
   }
 

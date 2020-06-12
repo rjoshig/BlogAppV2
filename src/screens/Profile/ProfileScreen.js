@@ -1,15 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
-// import * as React from 'react'
-// import { Text, View } from 'react-native'
-
-// export default function ProfileScreen() {
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Text>Profile Screen</Text>
-//     </View>
-//   )
-// }
-
 import React, { useContext, useState, useMemo, useEffect } from 'react'
 import { TextInput, StyleSheet, ScrollView, Text, View, TouchableOpacity } from 'react-native'
 import { DEVICE_WIDTH } from '@utilities/Dimensions'
@@ -23,14 +11,19 @@ import NewPasswordForm from '@screens/Profile/NewPasswordForm'
 
 import ReAuthenticateForm from '@screens/Profile/ReAuthenticateForm'
 
+import {
+  ReadUserTableService,
+  UpdateUserTableService,
+} from '@services/firebase/FirebaseCrud.service'
+
 export default function ProfileScreen() {
   // ! PUll Initial value this from Database later
-  const initialValAboutMe =
-    'Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis  omittam deseruisse consequuntur ius an, Lorem ipsum dolor sit amet, saepe sapientem eu name'
 
   // Get this from authContext authContext.state.fullName
   // When update, create a function in authContext (inside useMemo that will update the global state)
   // const initialValDisplayName = 'Jon Doo'
+  const initialValAboutMe =
+    'Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis  omittam deseruisse consequuntur ius an, Lorem ipsum dolor sit amet, saepe sapientem eu name'
 
   const theme = useTheme()
   const authContext = useContext(AuthContext)
@@ -41,9 +34,6 @@ export default function ProfileScreen() {
   const [isEdit, setIsEdit] = useState(false)
   const [isEditDisplayName, setIsEditDisplayName] = useState(false)
   const [isEditAboutMe, setIsEditAboutMe] = useState(false)
-  const [isChangePasswordSuccessToastVisible, setIChangePasswordSuccessToastVisible] = useState(
-    false,
-  )
 
   // Display Name (Tmp is for edit functions
 
@@ -57,10 +47,33 @@ export default function ProfileScreen() {
   const [email, setEmail] = useState(authContext.state.emailId)
   const [emailEdit, setEmailEdit] = useState(email)
   const [aboutMe, setAboutMe] = useState(initialValAboutMe)
+
   const [aboutMeEdit, setAboutMeEdit] = useState(aboutMe)
+  const [userData, setUserData] = useState()
 
-  console.log('DEBUG:: ProfileScreen -> displayName', displayName, displayNameEdit, email, aboutMe)
+  console.log('DEBUG:: ProfileScreen1 -> userData', userData)
 
+  useEffect(() => {
+    let isCurrent = true
+
+    const bootstrapProfileAsync = async () => {
+      const userData = await ReadUserTableService(authContext.state.uid)
+      console.log('DEBUG::\x1B[31m ProfileScreen2 -> userData', userData)
+      setUserData(userData)
+
+      console.log('DEBUG:: ProfileScreen3 -> userData : ', userData)
+    }
+
+    if (isCurrent) {
+      bootstrapProfileAsync()
+    }
+
+    return () => {
+      isCurrent = false
+    }
+  }, [])
+
+  console.log('DEBUG:: ProfileScreen4 -> displayName', displayName, displayNameEdit, email, aboutMe)
   // * aboutMe = Local State
   // * displayName = Globval state
 
@@ -104,15 +117,15 @@ export default function ProfileScreen() {
     setIsEdit(!isEdit)
   }
 
-  const handleEditDisplayName = () => {
-    setIsEditDisplayName(!isEditDisplayName)
-  }
+  const handleSaveUpdate = async () => {
+    const userData = {
+      aboutme: aboutMeEdit,
+      email: emailEdit,
+      displayName: displayNameEdit,
+    }
 
-  const handleEditAboutMe = () => {
-    setIsEditAboutMe(!isEditAboutMe)
-  }
+    await UpdateUserTableService(authContext.state.uid, userData)
 
-  const handleSaveUpdate = () => {
     // Call Firebase Update Query here directly. ? NOT NECESSSART TO GO THROUGH MAIN BECAUSE THE STATE IS  IN SYNC
     // aLSO UPDATE gLOBAL state IN Main FOR fullName
     // setIsEditAboutMe(!isEditAboutMe)
@@ -233,7 +246,7 @@ export default function ProfileScreen() {
                   maxLength={300}
                   value={aboutMeEdit}
                   onChangeText={(aboutMeEdit) => setAboutMeEdit(aboutMeEdit)}
-                  // style={styles.textInput}
+                  style={styles.textInput}
                 />
               ) : (
                 <View>
@@ -316,7 +329,7 @@ const styles = StyleSheet.create({
   textInput: {
     borderWidth: 1,
     // borderColor: '#000000',
-    borderWidth: 1,
+
     // backgroundColor: '#dcdcdc',
     // borderBottomColor: '#dcdcdc',
     //  borderBottomWidth: 1,

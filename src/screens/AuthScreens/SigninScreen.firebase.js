@@ -48,11 +48,11 @@ export default function SigninScreen(props) {
 
   const handleSubmit = (values, actions) => {
     SignInService(values.email, values.password)
-      .then((user) => {
-        console.log('DEBUG:  THEN HANDLE SIGNIN', user)
+      .then((userData) => {
+        console.log('DEBUG:  THEN HANDLE SIGNIN', userData)
 
         // This will displatch and change the state Globally
-        authContext.signIn(user)
+        authContext.signIn(userData)
 
         //    actions.setSubmitting(false)
       })
