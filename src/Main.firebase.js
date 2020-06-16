@@ -1,4 +1,6 @@
 import React, { useReducer, useEffect, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { authSelector, restoreAuthSuccess, restoreNoAuth } from '@redux/slices/authSlice'
 
 import { NavigationContainer } from '@react-navigation/native'
 import RootStackNavigator from '@navigations/RootStackNavigator'
@@ -14,31 +16,6 @@ const STORAGE_SESSION_TOKEN = 'sessionToken'
 
 function authReducer(prevState, action) {
   switch (action.type) {
-    case 'RESTORE_AUTH_WITH_NAME':
-      return {
-        ...prevState,
-        isLoading: false,
-        emailId: action.email,
-        fullName: action.name, // ! NAME
-        photoUrl: action.photourl,
-        emailVerified: action.emailverified,
-        uid: action.uid,
-      }
-    case 'RESTORE_AUTH_NO_NAME':
-      return {
-        ...prevState,
-        isLoading: false,
-        emailId: action.email,
-        photoUrl: action.photourl,
-        emailVerified: action.emailverified,
-        uid: action.uid,
-      }
-    case 'NO_AUTH':
-      return {
-        ...prevState,
-        isLoading: false,
-        isLoggedIn: false,
-      }
     case 'SIGN_IN_WITH_NAME':
       return {
         ...prevState,
@@ -87,44 +64,44 @@ export default function Main() {
     uid: null,
   }
 
-  // useREducer Hook
-  const [state, dispatch] = useReducer(authReducer, initialState)
+  const dispatch = useDispatch()
+  const { isLoading, isLoggedIn, user } = useSelector(authSelector)
 
-  console.log('DEBUG: \x1b[36m Reducer State:', state)
+  // useREducer Hook
+  // * const [state, dispatch] = useReducer(authReducer, initialState)
+
+  //* console.log('DEBUG: \x1b[36m Reducer State:', state)
 
   useEffect(() => {
-    const onAuthStateChanged = (user) => {
-      if (user) {
-        console.log('DEBUG:: onAuthStateChanged -> user', user)
+    let isCurrent = true
 
-        if (user.displayName) {
-          dispatch({
-            type: 'RESTORE_AUTH_WITH_NAME',
-            name: user.displayName,
-            email: user.email,
-            photourl: user.photoURL,
-            emailverified: user.emailVerified,
-            uid: user.uid,
-          })
-        } else {
-          dispatch({
-            type: 'RESTORE_AUTH_NO_NAME',
-            email: user.email,
-            photourl: user.photoURL,
-            emailverified: user.emailVerified,
-            uid: user.uid,
-          })
+    const onAuthStateChanged = (userData) => {
+      if (userData) {
+        console.log('DEBUG:: onAuthStateChanged -> userData', userData)
+
+        const user = {
+          fullName: userData.displayName,
+          emailId: userData.email,
+          photoUrl: userData.photoUrl,
+          emailVerified: userData.emailVerified,
+          uid: userData.uid,
         }
+
+        dispatch(restoreAuthSuccess(user))
       } else {
-        dispatch({
-          type: 'NO_AUTH',
-        })
+        dispatch(restoreNoAuth())
       }
     }
+    if (isCurrent) {
+      auth().onAuthStateChanged(onAuthStateChanged)
+    }
 
-    const userObj = auth().onAuthStateChanged(onAuthStateChanged)
+    return () => {
+      isCurrent = false
+    }
+
     //   return userObj // unsubscribe on unmount
-  }, [])
+  }, [dispatch])
 
   const authContext = useMemo(() => ({
     signIn: (userData) => {
@@ -207,17 +184,17 @@ export default function Main() {
       })
     },
 
-    state: state,
+    // state: "state",
   }))
 
-  if (state.isLoading) {
+  if (isLoading) {
     return <SplashScreen />
   }
 
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        <RootStackNavigator isLoggedIn={state.isLoggedIn} />
+        <RootStackNavigator isLoggedIn={isLoggedIn} />
       </NavigationContainer>
     </AuthContext.Provider>
   )

@@ -9,8 +9,10 @@ import FormInput from '@components/FormInput'
 import FormButton from '@components/FormButton'
 import ErrorMessage from '@components/ErrorMessages'
 
-import { AuthContext } from '@components/Context'
 import Logo from '@components/Logo'
+import { useDispatch, useSelector } from 'react-redux'
+import { authSelector, signInSuccess, signInFailed, signIn } from '@redux/slices/authSlice'
+
 import { SignInService } from '@services/firebase/FirebaseAuth.service'
 
 const SigninValidationSchema = Yup.object().shape({
@@ -25,9 +27,11 @@ export default function SigninScreen(props) {
   // console.log('DEBUG: Props', props)
   //   const theme = useTheme()
   const [serverErrMessage, setserverErrMessage] = useState('')
-  const authContext = useContext(AuthContext)
 
-  console.log('DEBUG: ENTER SIGNIN SCREEN', authContext)
+  const dispatch = useDispatch()
+  const { isLoading, isLoggedIn, user, authErrorMessage } = useSelector(authSelector)
+
+  console.log('DEBUG: ENTER SIGNIN SCREEN')
 
   // const goToSignup = () => {
   //   console.log('Create Account Pressed')
@@ -46,26 +50,66 @@ export default function SigninScreen(props) {
     props.navigation.navigate('ResetPasswordScreen')
   }
 
-  const handleSubmit = (values, actions) => {
-    SignInService(values.email, values.password)
-      .then((userData) => {
-        console.log('DEBUG:  THEN HANDLE SIGNIN', userData)
+  const handleSubmit = async (values, actions) => {
+    const cred = {}
+    cred.email = values.email
+    cred.password = values.password
+    await dispatch(signIn(cred))
+    console.log('III', authErrorMessage)
 
-        // This will displatch and change the state Globally
-        authContext.signIn(userData)
+    // const tt = authErrorMessage ? actions.setSubmitting(false) : null
 
-        //    actions.setSubmitting(false)
-      })
-      .catch((err) => {
-        console.log('DEBUG: ERROR CATCH SIGNINSCREEN', err)
-        const resMessage =
-          (err.response && err.response.data && err.response.data.message) ||
-          err.message ||
-          err.toString()
-        setserverErrMessage(resMessage)
-        // props.navigation.navigate('AfterSignup', resMessage)
-        actions.setSubmitting(false)
-      })
+    // try {
+
+    // } catch (error) {
+    //   console.log('DEBUG:: handleSubmit -> error', error)
+
+    //   actions.setSubmitting(false)
+    // }
+
+    // try {
+    //   const res = await dispatch(signIn(cred))
+    //   console.log('DEBUG:: SigninScreen -> res', res)
+    //
+    // } catch (err) {
+    //   console.log('DEBUG:: handleSubmit -> error', err)
+    //   console.log('DEBUG: ERROR CATCH SIGNINSCREEN', err)
+    //   const resMessage =
+    //     (err.response && err.response.data && err.response.data.message) ||
+    //     err.message ||
+    //     err.toString()
+    //   setserverErrMessage(resMessage)
+    //   // props.navigation.navigate('AfterSignup', resMessage)
+    //   actions.setSubmitting(false)
+    // }
+
+    // SignInService(values.email, values.password)
+    //   .then((userData) => {
+    //     console.log('DEBUG:  THEN HANDLE SIGNIN', userData)
+    //     const user = {ontext
+    //       fullName: userData.user.displayName,
+    //       emailId: userData.user.email,
+    //       photoUrl: userData.user.photoUrl,
+    //       emailVerified: userData.user.emailVerified,
+    //       uid: userData.user.uid,
+    //     }
+    //     dispatch(signInSuccess(user))
+    //     // This will displatch and change the state Globally
+    //     // authContext.signIn(userData)
+
+    //     //    actions.setSubmitting(false)
+    //   })
+    //   .catch((err) => {
+    //     console.log('DEBUG: ERROR CATCH SIGNINSCREEN', err)
+    //     const resMessage =
+    //       (err.response && err.response.data && err.response.data.message) ||
+    //       err.message ||
+    //       err.toString()
+    //     dispatch(signInFailed(resMessage))
+    //     // setserverErrMessage(resMessage)
+    //     // props.navigation.navigate('AfterSignup', resMessage)
+    //     actions.setSubmitting(false)
+    //   })
 
     // actions.setSubmitting(true)
     // authContext
@@ -129,8 +173,8 @@ export default function SigninScreen(props) {
               iconColor="#2C384A"
             />
             <ErrorMessage errorValue={touched.password && errors.password} />
-            <ErrorMessage errorValue={serverErrMessage} />
-
+            {/* <ErrorMessage errorValue={serverErrMessage} /> */}
+            <ErrorMessage errorValue={authErrorMessage} />
             <View style={styles.buttonContainer}>
               <FormButton
                 disabled={!isValid || isSubmitting}

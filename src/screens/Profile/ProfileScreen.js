@@ -5,7 +5,16 @@ import { useTheme, Avatar } from 'react-native-paper'
 
 import Modal from 'react-native-modal'
 
-import { AuthContext, ProfileContext } from '@components/Context'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  profileSelector,
+  readUserTable,
+  setIsReAuthenticateFormVisible,
+  setIsNewPasswordFormVisible,
+} from '@redux/slices/profileSlice'
+import { authSelector } from '@redux/slices/authSlice'
+
+// import { AuthContext, ProfileContext } from '@components/Context'
 
 import NewPasswordForm from '@screens/Profile/NewPasswordForm'
 
@@ -17,6 +26,12 @@ import {
 } from '@services/firebase/FirebaseCrud.service'
 
 export default function ProfileScreen() {
+  const dispatch = useDispatch()
+  const { userTableData, isReAuthenticateFormVisible, isNewPasswordFormVisible } = useSelector(
+    profileSelector,
+  )
+  const { isLoading, isLoggedIn, user, authErrorMessage } = useSelector(authSelector)
+
   // ! PUll Initial value this from Database later
 
   // Get this from authContext authContext.state.fullName
@@ -26,10 +41,10 @@ export default function ProfileScreen() {
     'Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis  omittam deseruisse consequuntur ius an, Lorem ipsum dolor sit amet, saepe sapientem eu name'
 
   const theme = useTheme()
-  const authContext = useContext(AuthContext)
+  //* const authContext = useContext(AuthContext)
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [isReAuthenticateFormVisible, setIsReAuthenticateFormVisible] = useState(false)
-  const [isNewPasswordFormVisible, setIsNewPasswordFormVisible] = useState(false)
+  // const [isReAuthenticateFormVisible, setIsReAuthenticateFormVisible] = useState(false)
+  // const [isNewPasswordFormVisible, setIsNewPasswordFormVisible] = useState(false)
 
   const [isEdit, setIsEdit] = useState(false)
   const [isEditDisplayName, setIsEditDisplayName] = useState(false)
@@ -42,38 +57,36 @@ export default function ProfileScreen() {
   // When User click Cancel (udate Tmp with Display name)
   // When user click Save Update displaayNm with Tmp
 
-  const [displayName, setDisplayName] = useState(authContext.state.fullName)
-  const [displayNameEdit, setDisplayNameEdit] = useState(displayName)
-  const [email, setEmail] = useState(authContext.state.emailId)
-  const [emailEdit, setEmailEdit] = useState(email)
-  const [aboutMe, setAboutMe] = useState(initialValAboutMe)
+  //* const [displayName, setDisplayName] = useState(userTableData.fullName)
+  //* const [displayNameEdit, setDisplayNameEdit] = useState(displayName)
+  // * const [email, setEmail] = useState(authContext.state.emailId)
+  //* const [emailEdit, setEmailEdit] = useState(email)
+  //* const [aboutMe, setAboutMe] = useState(initialValAboutMe)
 
-  const [aboutMeEdit, setAboutMeEdit] = useState(aboutMe)
-  const [userData, setUserData] = useState()
-
-  console.log('DEBUG:: ProfileScreen1 -> userData', userData)
+  //* const [aboutMeEdit, setAboutMeEdit] = useState(aboutMe)
+  //* const [userData, setUserData] = useState()
 
   useEffect(() => {
     let isCurrent = true
 
-    const bootstrapProfileAsync = async () => {
-      const userData = await ReadUserTableService(authContext.state.uid)
-      console.log('DEBUG::\x1B[31m ProfileScreen2 -> userData', userData)
-      setUserData(userData)
+    // const bootstrapProfileAsync = async () => {
+    //   const userData = await ReadUserTableService(authContext.state.uid)
+    //   console.log('DEBUG::\x1B[31m ProfileScreen2 -> userData', userData)
+    //   setUserData(userData)
 
-      console.log('DEBUG:: ProfileScreen3 -> userData : ', userData)
-    }
+    //   console.log('DEBUG:: ProfileScreen3 -> userData : ', userData)
+    // }
 
     if (isCurrent) {
-      bootstrapProfileAsync()
+      // *    bootstrapProfileAsync()
+      dispatch(readUserTable(user.uid))
     }
 
     return () => {
       isCurrent = false
     }
-  }, [])
+  }, [dispatch, user.uid])
 
-  console.log('DEBUG:: ProfileScreen4 -> displayName', displayName, displayNameEdit, email, aboutMe)
   // * aboutMe = Local State
   // * displayName = Globval state
 
@@ -86,27 +99,27 @@ export default function ProfileScreen() {
   // ! START FROM HERE DEFINETHIS AS OBJECT AND THEN USE IT IN MODAL CONTENT,
   // !INCLUDE EMAILAND DISPLAY NM
 
-  const profileContext = useMemo(() => ({
-    onReAuthenticateCancel: () => {
-      setIsReAuthenticateFormVisible(false)
-      setIsModalVisible(false)
-    },
+  // const profileContext = useMemo(() => ({
+  //   onReAuthenticateCancel: () => {
+  //     setIsReAuthenticateFormVisible(false)
+  //     setIsModalVisible(false)
+  //   },
 
-    onReAuthenticateNext: () => {
-      //   setIsModalVisible(true)
-      setIsReAuthenticateFormVisible(false)
-      setIsNewPasswordFormVisible(true)
-    },
+  //   onReAuthenticateNext: () => {
+  //     //   setIsModalVisible(true)
+  //     setIsReAuthenticateFormVisible(false)
+  //     setIsNewPasswordFormVisible(true)
+  //   },
 
-    onChangePasswordSuccess: () => {
-      setIsNewPasswordFormVisible(false)
-      setIsModalVisible(false)
-    },
-    onChangePasswordCancel: () => {
-      setIsNewPasswordFormVisible(false)
-      setIsModalVisible(false)
-    },
-  }))
+  //   onChangePasswordSuccess: () => {
+  //     setIsNewPasswordFormVisible(false)
+  //     setIsModalVisible(false)
+  //   },
+  //   onChangePasswordCancel: () => {
+  //     setIsNewPasswordFormVisible(false)
+  //     setIsModalVisible(false)
+  //   },
+  // }))
 
   const handleOnBackButtonPress = () => {
     setIsReAuthenticateFormVisible(false)
@@ -153,8 +166,8 @@ export default function ProfileScreen() {
   }
 
   const handleChangePassword = () => {
-    setIsModalVisible(true)
-    setIsReAuthenticateFormVisible(true)
+    //* setIsModalVisible(true)
+    dispatch(setIsReAuthenticateFormVisible(true))
   }
 
   // ! TODO: Create a Warapper for Profile Screen
@@ -162,121 +175,82 @@ export default function ProfileScreen() {
   // ! something like { isEdit ? (<View> COMPONENT HERE </View>) : (<ScrollView> COMPONENT HERE </ScrollView>)}
   // ? Probably not needed since Profile view will be fixed view anyway
   return (
-    <ProfileContext.Provider value={profileContext}>
-      <ScrollView>
-        <Modal
-          backdropColor="#FFF"
-          isVisible={isReAuthenticateFormVisible}
-          // onBackdropPress={toggleModal}
-          onBackButtonPress={handleOnBackButtonPress} // Called when the Android back button is pressed
-          swipeDirection={['down']}
-          // animationOut="slideOutDown"
-          coverScreen={true}
-          backdropOpacity={0.96} // This gives the Opacity
-          // style={styles.modalView}
-          animationIn="slideInRight" // slideInLeft
-          animationOut="slideOutLeft" // slideOutRight
-          backdropTransitionInTiming={800}
-          backdropTransitionOutTiming={800}
-          animationInTiming={1000}
-          animationOutTiming={1000}
-        >
-          <ReAuthenticateForm />
-        </Modal>
+    <ScrollView>
+      <Modal
+        backdropColor="#FFF"
+        isVisible={isReAuthenticateFormVisible}
+        // onBackdropPress={toggleModal}
+        onBackButtonPress={handleOnBackButtonPress} // Called when the Android back button is pressed
+        swipeDirection={['down']}
+        // animationOut="slideOutDown"
+        coverScreen={true}
+        backdropOpacity={0.96} // This gives the Opacity
+        // style={styles.modalView}
+        animationIn="slideInRight" // slideInLeft
+        animationOut="slideOutLeft" // slideOutRight
+        backdropTransitionInTiming={800}
+        backdropTransitionOutTiming={800}
+        animationInTiming={1000}
+        animationOutTiming={1000}
+      >
+        <ReAuthenticateForm />
+      </Modal>
 
-        <Modal
-          backdropColor="#FFF"
-          isVisible={isNewPasswordFormVisible}
-          // onBackdropPress={toggleModal}
-          onBackButtonPress={handleOnBackButtonPress} // Called when the Android back button is pressed
-          swipeDirection={['down']}
-          // animationOut="slideOutDown"
-          coverScreen={true}
-          backdropOpacity={0.96} // This gives the Opacity
-          // style={styles.modalView}
-          // animationIn="zoomInDown"
-          // animationOut="zoomOutUp"
-          animationIn="slideInRight" // slideInLeft
-          animationOut="slideOutLeft" // slideOutRight
-          backdropTransitionInTiming={800}
-          backdropTransitionOutTiming={800}
-          animationInTiming={1000}
-          animationOutTiming={1000}
-        >
-          <NewPasswordForm />
-        </Modal>
+      <Modal
+        backdropColor="#FFF"
+        isVisible={isNewPasswordFormVisible}
+        // onBackdropPress={toggleModal}
+        onBackButtonPress={handleOnBackButtonPress} // Called when the Android back button is pressed
+        swipeDirection={['down']}
+        // animationOut="slideOutDown"
+        coverScreen={true}
+        backdropOpacity={0.96} // This gives the Opacity
+        // style={styles.modalView}
+        // animationIn="zoomInDown"
+        // animationOut="zoomOutUp"
+        animationIn="slideInRight" // slideInLeft
+        animationOut="slideOutLeft" // slideOutRight
+        backdropTransitionInTiming={800}
+        backdropTransitionOutTiming={800}
+        animationInTiming={1000}
+        animationOutTiming={1000}
+      >
+        <NewPasswordForm />
+      </Modal>
 
-        <View style={styles.container}>
-          <View style={styles.header}></View>
+      <View style={styles.container}>
+        <View style={styles.header}></View>
 
-          <Avatar.Image
-            style={styles.avatar}
-            source={require('@assets/images/avatar1.png')}
-            size={150}
-          />
+        <Avatar.Image
+          style={styles.avatar}
+          source={require('@assets/images/avatar1.png')}
+          size={150}
+        />
 
-          <View style={styles.body}>
-            <View style={styles.bodyContent}>
-              {isEdit ? (
-                <TextInput
-                  value={displayNameEdit}
-                  onChangeText={(displayNameEdit) => setDisplayNameEdit(displayNameEdit)}
-                  style={styles.textName}
-                />
-              ) : (
-                <View style={styles.nameContainer}></View>
-              )}
+        <View style={styles.body}>
+          <View style={styles.bodyContent}>
+            <View style={styles.nameContainer}>{user.fullName}</View>
 
-              {isEdit ? (
-                <TextInput
-                  value={emailEdit}
-                  keyboardType="email-address"
-                  autoCorrect={false}
-                  onChangeText={(emailEdit) => setEmailEdit(emailEdit)}
-                  style={styles.textEmail}
-                />
-              ) : (
-                <Text style={styles.info}>{email}</Text>
-              )}
-              <Text style={styles.about}>About me</Text>
-              {isEdit ? (
-                <TextInput
-                  multiline
-                  numberOfLines={4}
-                  maxLength={300}
-                  value={aboutMeEdit}
-                  onChangeText={(aboutMeEdit) => setAboutMeEdit(aboutMeEdit)}
-                  style={styles.textInput}
-                />
-              ) : (
-                <View>
-                  <Text style={styles.description}>{aboutMe}</Text>
-                </View>
-              )}
-              {isEdit ? (
-                <View style={styles.touchable}>
-                  <TouchableOpacity onPress={handleSaveUpdate}>
-                    <Text style={{ color: theme.colors.primary }}>Save</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={handleCancelUpdate}>
-                    <Text style={{ color: theme.colors.primary }}>Cancel</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View style={styles.touchable}>
-                  <TouchableOpacity onPress={handleEdit}>
-                    <Text style={{ color: theme.colors.primary }}>Edit Profile</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={handleChangePassword}>
-                    <Text style={{ color: theme.colors.primary }}>Change Password </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+            <Text style={styles.info}>{user.emailId}</Text>
+
+            <Text style={styles.about}>About me</Text>
+
+            <View>
+              <Text style={styles.description}>{userTableData.aboutme}</Text>
+            </View>
+
+            <View style={styles.touchable}>
+              <TouchableOpacity onPress={handleEdit}>
+                <Text style={{ color: theme.colors.primary }}>Edit Profile</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleChangePassword}>
+                <Text style={{ color: theme.colors.primary }}>Change Password </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
-      </ScrollView>
-    </ProfileContext.Provider>
+      </View>
+    </ScrollView>
   )
 }
 

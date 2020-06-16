@@ -1,13 +1,26 @@
 import database from '@react-native-firebase/database'
+import { PROFILE_TBL } from '@constants/databaseConstants.js'
 
 // async function latestTime() {
 const ReadUserTableService = async (uid) => {
-  const data = await database()
+  return database()
     .ref('users/' + uid)
     .once('value')
-  console.log('DEBUG:: ReadUserTableService -> data', data)
 
-  return data
+  // .then((snap) => {
+  //   console.log('object', snap.val())
+  //   return snap.val()
+  // })
+  // .catch((err) => {
+  //   throw err
+  // })
+
+  // const data = await database()
+  //   .ref('users/' + uid)
+  //   .once('value')
+  // console.log('DEBUG:: ReadUserTableService -> data', data)
+
+  // return data
 
   // ? OR just do return on teh function itself
   // .then((data) => {
@@ -21,7 +34,7 @@ const UpdateUserTableService = async (uid, userData) => {
   const data = await database()
     .ref('users/' + uid)
     .set({
-      aboutme: userData.aboutme,
+      aboutMe: userData.aboutme,
       email: userData.email,
       displayName: userData.displayName,
     })

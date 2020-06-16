@@ -13,7 +13,7 @@ module.exports = function (api) {
             '@constants': './src/constants',
             '@hooks': './src/hooks',
             '@navigations': './src/navigations',
-            '@stores': './src/stores',
+            '@redux': './src/redux',
             '@utilities': './src/utilities',
             '@services': './src/services',
             '@screens': './src/screens',

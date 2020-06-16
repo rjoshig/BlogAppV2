@@ -8,8 +8,10 @@ import * as Yup from 'yup'
 import FormInput from '../../components/FormInput'
 import FormButton from '../../components/FormButton'
 import ErrorMessage from '../../components/ErrorMessages'
-import { ProfileContext } from '@components/Context'
+
 import { ChangePasswordService } from '@services/firebase/FirebaseAuth.service'
+import { useDispatch } from 'react-redux'
+import { setIsNewPasswordFormVisible } from '@redux/slices/profileSlice'
 
 const ChangePasswordValidationSchema = Yup.object().shape({
   newpassword: Yup.string()
@@ -22,20 +24,21 @@ const ChangePasswordValidationSchema = Yup.object().shape({
 })
 
 export default function NewPasswordForm() {
+  const dispatch = useDispatch()
+
   const [serverErrMessage, setserverErrMessage] = useState('')
-  const profileContext = useContext(ProfileContext)
 
   const handleNewPasswordCancel = () => {
-    profileContext.onChangePasswordCancel()
+    dispatch(setIsNewPasswordFormVisible(false))
   }
-
   const handleSubmit = (values, actions) => {
     actions.setSubmitting(true)
-    // Call Signup from parse.service
+
     ChangePasswordService(values.newpassword)
       .then((result) => {
         console.log('DEBUG:: handleSubmit -> result', result)
-        profileContext.onChangePasswordSuccess()
+
+        dispatch(setIsNewPasswordFormVisible(false))
       })
       .catch((err) => {
         console.log('DEBUG:: handleSubmit -> err', err)

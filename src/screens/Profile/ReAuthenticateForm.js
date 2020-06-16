@@ -9,7 +9,12 @@ import FormButton from '@components/FormButton'
 import ErrorMessage from '@components/ErrorMessages'
 
 import { ReauthenticateWithCredentialService } from '@services/firebase/FirebaseAuth.service'
-import { ProfileContext } from '@components/Context'
+
+import { useDispatch } from 'react-redux'
+import {
+  setIsReAuthenticateFormVisible,
+  setIsNewPasswordFormVisible,
+} from '@redux/slices/profileSlice'
 
 const PasswordValidationSchema = Yup.object().shape({
   currentpassword: Yup.string()
@@ -19,27 +24,20 @@ const PasswordValidationSchema = Yup.object().shape({
 })
 
 export default function ReAuthenticateForm() {
+  const dispatch = useDispatch()
   const [serverErrMessage, setserverErrMessage] = useState('')
 
-  const profileContext = useContext(ProfileContext)
-
-  // ! Logic to Click Cancel Reauthenticate from Parent
   const handleCurrentPasswordCancel = () => {
-    profileContext.onReAuthenticateCancel()
+    dispatch(setIsReAuthenticateFormVisible(false))
   }
 
-  // ! Click Next
+  // ! Click Next convert to THUNK in profileSlice Later
   const handleSubmit = (values, actions) => {
-    // actions.setSubmitting(true)
-    // const user = auth().currentUser
-    // user.reauthenticateWithCredential(authContext.state.emailId, values.currentpassword)
     ReauthenticateWithCredentialService(values.currentpassword)
       .then((result) => {
         console.log('DEBUG:: handleSubmit -> result', result)
-        profileContext.onReAuthenticateNext()
-        // pass function from props so that thyis can be generic
-
-        // actions.setSubmitting(false)
+        dispatch(setIsReAuthenticateFormVisible(false))
+        dispatch(setIsNewPasswordFormVisible(true))
       })
       .catch((err) => {
         console.log('DEBUG:: handleSubmit -> err', err)

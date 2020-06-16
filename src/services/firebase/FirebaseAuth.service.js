@@ -1,6 +1,6 @@
 import auth from '@react-native-firebase/auth'
 import database from '@react-native-firebase/database'
-
+import { PROFILE_TBL } from '@constants/databaseConstants.js'
 // const usersRef = database().ref('users')
 
 // firebaseRef.child('users').child(user.uid).once('value', callback)
@@ -35,7 +35,7 @@ const SignInService = (email, password) => {
   return auth().signInWithEmailAndPassword(email, password)
 }
 
-const SignOutService = (email, password) => {
+const SignOutService = () => {
   return auth().signOut()
 }
 

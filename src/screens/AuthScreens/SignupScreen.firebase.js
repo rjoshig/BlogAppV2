@@ -61,7 +61,7 @@ export default function SignupScreen(props) {
       .then((result) => {
         console.log('DEBUG:: handleSubmit -> result', result)
 
-        authContext.signUp() // dispatch
+        // * authContext.signUp() // dispatch
         props.navigation.navigate('AfterSignup', 'User Created Successfully')
       })
       .catch((err) => {

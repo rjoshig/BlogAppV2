@@ -3,7 +3,8 @@
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
 import React, { useEffect } from 'react'
 import { Platform, StyleSheet } from 'react-native'
-
+import { Provider } from 'react-redux'
+import store from '@redux/store'
 import Main from './src/Main.firebase'
 // import ParseInit from '@services/parse/parsinit'
 
@@ -34,9 +35,11 @@ export default function App() {
   // })
 
   return (
-    <PaperProvider theme={theme}>
-      <Main></Main>
-    </PaperProvider>
+    <Provider store={store}>
+      <PaperProvider theme={theme}>
+        <Main></Main>
+      </PaperProvider>
+    </Provider>
   )
 }
 
