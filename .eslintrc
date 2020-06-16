@@ -3,7 +3,8 @@
     "react",
     "react-native",
     "prettier",
-    "react-hooks"
+    "react-hooks",
+    "react-redux"
   ],
   "parser": "babel-eslint",
   "parserOptions": {
@@ -24,7 +25,8 @@
     "plugin:react-native/all",
     "plugin:prettier/recommended",
     "plugin:import/errors",
-    "plugin:import/warnings"
+    "plugin:import/warnings",
+    "plugin:react-redux/recommended"
   ],
   "settings": {
     "react": {

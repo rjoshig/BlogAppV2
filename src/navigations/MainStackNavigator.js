@@ -1,17 +1,17 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import BottomTabNavigator from '../navigations/BottomTabNavigator'
+import BottomTabNavigator from '@navigations/BottomTabNavigator'
 
-import Feed from '../screens/Feed'
-import HomeScreen from '../screens/HomeScreen'
-import ProfileScreen from '../screens/ProfileScreen'
-import Header from '../components/Header'
-import Preferences from '../screens/Preferences'
-import Bookmarks from '../screens/Bookmarks'
-import SigninScreen from '../screens/AuthScreens/SigninScreen.formik'
-import SignupScreen from '../screens/AuthScreens/SignupScreen.formik'
-import MyPosts from '../screens/MyPosts'
-import SettingsScreen from '../screens/SettingsScreen'
+import Feed from '@screens/Feed'
+import HomeScreen from '@screens/HomeScreen'
+import ProfileScreen from '@screens/Profile/ProfileScreen'
+import Header from '@components/Header'
+import Preferences from '@screens/Preferences'
+import Bookmarks from '@screens/Bookmarks'
+import SigninScreen from '@screens/AuthScreens/SigninScreen.firebase'
+import SignupScreen from '@screens/AuthScreens/SignupScreen.firebase'
+import MyPosts from '@screens/MyPosts'
+import SettingsScreen from '@screens/SettingsScreen'
 
 const Stack = createStackNavigator()
 

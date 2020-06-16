@@ -2,15 +2,17 @@ import React from 'react'
 
 import { createStackNavigator } from '@react-navigation/stack'
 
-import LeftDrawerNavigator from '../navigations/LeftDrawerNavigator'
-import AuthStackNavigator from '../navigations/AuthStackNavigator'
+import LeftDrawerNavigator from '@navigations/LeftDrawerNavigator'
+import AuthStackNavigator from '@navigations/AuthStackNavigator'
 
 const RootStack = createStackNavigator()
 
-export default function RootStackNavigator({ userToken }) {
+export default function RootStackNavigator({ isLoggedIn }) {
+  console.log('DEBUG:: RootStackNavigator -> isLoggedin', isLoggedIn)
+
   return (
     <RootStack.Navigator headerMode="none">
-      {userToken ? (
+      {isLoggedIn ? (
         <RootStack.Screen
           name="App"
           component={LeftDrawerNavigator}

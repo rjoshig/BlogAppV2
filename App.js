@@ -3,9 +3,10 @@
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
 import React, { useEffect } from 'react'
 import { Platform, StyleSheet } from 'react-native'
-
-import Main from './src/Main'
-import ParseInit from '@services/parse/parse.init'
+import { Provider } from 'react-redux'
+import store from '@redux/store'
+import Main from './src/Main.firebase'
+// import ParseInit from '@services/parse/parsinit'
 
 // NOTE: REMOVE BELOW LINE IN PROD
 // ;<script src="http://localhost:8097/"></script>
@@ -27,16 +28,18 @@ const instructions = Platform.select({
 })
 
 export default function App() {
-  useEffect(() => {
-    console.log('DEBUG: APP USE EFFECT: INIT PARSE')
-    ParseInit()
-    // rjoshi: This can be puit in MAin during Bootstrapping
-  })
+  // useEffect(() => {
+  //   console.log('DEBUG: APP USE EFFECT: INIT PARSE')
+  //   // ParseInit()
+  //   // rjoshi: This can be puit in MAin during Bootstrapping
+  // })
 
   return (
-    <PaperProvider theme={theme}>
-      <Main></Main>
-    </PaperProvider>
+    <Provider store={store}>
+      <PaperProvider theme={theme}>
+        <Main></Main>
+      </PaperProvider>
+    </Provider>
   )
 }
 

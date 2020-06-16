@@ -13,7 +13,10 @@ import {
   Switch,
 } from 'react-native-paper'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { AuthContext } from '../components/Context'
+import { useDispatch, useSelector } from 'react-redux'
+import { authSelector, signOut } from '@redux/slices/authSlice'
+
+// * import { AuthContext } from '../components/Context'
 // Functions
 // onPressProfile
 // onPressBookmarks
@@ -22,8 +25,8 @@ import { AuthContext } from '../components/Context'
 // Main Function
 
 const ProtectedLeftDrawerContent = (props) => {
-  const authContext = useContext(AuthContext)
-
+  //* const authContext = useContext(AuthContext)
+  const { isLoading, isLoggedIn, user } = useSelector(authSelector)
   return (
     <View>
       <View style={styles.userInfoSection}>
@@ -36,7 +39,7 @@ const ProtectedLeftDrawerContent = (props) => {
         <Title style={styles.title}>John Doe</Title>
 
         <TouchableRipple onPress={() => props.navigation.navigate('ProfileScreen')}>
-          <Caption style={styles.caption}>{authContext.state.userName}</Caption>
+          <Caption style={styles.caption}>{user.emailId}</Caption>
         </TouchableRipple>
 
         <View style={styles.row}>
@@ -120,10 +123,13 @@ const PublicLeftDrawerContent = (props) => {
 }
 
 export default function LeftDrawerContent(props) {
-  const authContext = useContext(AuthContext)
-
+  //* const authContext = useContext(AuthContext)
+  const { isLoading, isLoggedIn, user } = useSelector(authSelector)
+  const dispatch = useDispatch()
   const handleLogout = () => {
-    authContext.signOut()
+    //*  authContext.signOut()
+    console.log('LOGOUT PRESSED')
+    dispatch(signOut())
   }
   // const [isSignedIn, setisSignedIn] = useState(true)
 
@@ -134,7 +140,7 @@ export default function LeftDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.drawerContent}>
-        {authContext.state.userName ? (
+        {isLoggedIn ? (
           <ProtectedLeftDrawerContent {...props} />
         ) : (
           <PublicLeftDrawerContent {...props} />
